@@ -11,9 +11,9 @@ import {
  * This class will be bound to the application as an `Interceptor` during
  * `boot`
  */
-@injectable({tags: {key: FindByIdInterceptor.BINDING_KEY}})
-export class FindByIdInterceptor implements Provider<Interceptor> {
-  static readonly BINDING_KEY = `interceptors.${FindByIdInterceptor.name}`;
+@injectable({tags: {key: InfoInterceptor.BINDING_KEY}})
+export class InfoInterceptor implements Provider<Interceptor> {
+  static readonly BINDING_KEY = `interceptors.${InfoInterceptor.name}`;
 
   /*
   constructor() {}
@@ -38,11 +38,23 @@ export class FindByIdInterceptor implements Provider<Interceptor> {
     invocationCtx: InvocationContext,
     next: () => ValueOrPromise<InvocationResult>,
   ) {
+    console.log(invocationCtx.args)
     try {
       // Add pre-invocation logic here
-      const result = await next();
-      console.log("I GOT CALLED");
+      let result: any = await next();
       // Add post-invocation logic here
+      //console.log(result);
+      let pokemon = []
+      if (Array.isArray(result)) {
+        for (let i = 0; i < result.length; i++) {
+          pokemon.push(result[i].info);
+        }
+        result = pokemon;
+      }
+      else {
+        result = result.info;
+      }
+
       return result;
     } catch (err) {
       // Add error handling logic here

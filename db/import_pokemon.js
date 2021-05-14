@@ -20,7 +20,6 @@ client.connect((err, res) => {
 
 function importPokemon() {
   let query = format('Insert into pokemon (id, name, type1, type2, favorite, info) values %L', pokemonInsertArray);
-  //let query = "select table_name, column_name, data_type from information_schema.columns where table_name = 'pokemon'";
   client.query(query, (err, res) => {
     if (err) {
       console.log("ERROR")

@@ -1,5 +1,5 @@
 import {ApplicationConfig, PokedexApplication} from './application';
-import {FieldsInterceptor} from './interceptors';
+import {InfoInterceptor, TypesInterceptor} from './interceptors';
 
 export * from './application';
 
@@ -7,7 +7,8 @@ export async function main(options: ApplicationConfig = {}) {
   const app = new PokedexApplication(options);
   await app.boot();
   await app.start();
-  app.bind('fields').toProvider(FieldsInterceptor);
+  app.bind('unwrap').toProvider(InfoInterceptor);
+  app.bind('types').toProvider(TypesInterceptor);
   const url = app.restServer.url;
   console.log(`Server is running at ${url}`);
   console.log(`Try ${url}/ping`);

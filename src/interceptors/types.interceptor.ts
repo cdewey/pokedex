@@ -11,9 +11,9 @@ import {
  * This class will be bound to the application as an `Interceptor` during
  * `boot`
  */
-@injectable({tags: {key: FieldsInterceptor.BINDING_KEY}})
-export class FieldsInterceptor implements Provider<Interceptor> {
-  static readonly BINDING_KEY = `interceptors.${FieldsInterceptor.name}`;
+@injectable({tags: {key: TypesInterceptor.BINDING_KEY}})
+export class TypesInterceptor implements Provider<Interceptor> {
+  static readonly BINDING_KEY = `interceptors.${TypesInterceptor.name}`;
 
   /*
   constructor() {}
@@ -38,16 +38,18 @@ export class FieldsInterceptor implements Provider<Interceptor> {
     invocationCtx: InvocationContext,
     next: () => ValueOrPromise<InvocationResult>,
   ) {
-    console.log(invocationCtx.args)
     try {
       // Add pre-invocation logic here
-      // invocationCtx.args[1].fields = {
-      //   info: true
-      // }
       let result = await next();
-      // Add post-invocation logic here
-
-      result = result.info;
+      let types = []
+      if (Array.isArray(result)) {
+        for (let i = 0; i < result.length; i++) {
+          if (result[i].type) {
+            types.push(result[i].type);
+          }
+        }
+        result = types;
+      }
       return result;
     } catch (err) {
       // Add error handling logic here

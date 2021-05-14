@@ -22,7 +22,7 @@ import {
 
   response
 } from '@loopback/rest';
-import {Pokemon} from '../models';
+import {Pokemon, SearchPokemon} from '../models';
 import {PokemonRepository} from '../repositories';
 
 export class PokemonController {
@@ -43,10 +43,11 @@ export class PokemonController {
       },
     },
   })
+  @intercept('unwrap')
   async find(
-    @requestBody() input: any,
+    @requestBody() input: SearchPokemon,
   ): Promise<Pokemon[]> {
-    return this.pokemonRepository.findPokemon(input.filterFavorite);
+    return this.pokemonRepository.findPokemon(input);
   }
 
 
@@ -59,7 +60,7 @@ export class PokemonController {
       },
     },
   })
-  @intercept('fields')
+  @intercept('unwrap')
   async findById(
     @param.path.string('id') id: string,
     //@param.filter(Pokemon, {exclude: ['where', 'fields']}) filter?: FilterExcludingWhere<Pokemon>
@@ -76,19 +77,37 @@ export class PokemonController {
       },
     },
   })
-  @intercept('fields')
+  @intercept('unwrap')
   async findByName(
     @param.path.string('name') name: string,
   ): Promise<Pokemon | null> {
     return this.pokemonRepository.findByName(name);
   }
 
+  @get('/pokemon/types')
+  @response(200, {
+    description: 'Array of Strings of Pokemon types',
+    content: {
+      'application/json': {
+      },
+    },
+  })
+  @intercept('types')
+  async getTypes(
+  ): Promise<string[] | null> {
+    return this.pokemonRepository.getPokemonTypes();
+  }
 
 
 
   @patch('/pokemon/favorite/{id}')
-  @response(204, {
+  @response(200, {
     description: 'Pokemon PATCH success',
+    content: {
+      'application/json': {
+        result: "SUCCESS"
+      },
+    }
   })
   async markAsFavorite(
     @param.path.string('id') id: string,
@@ -97,8 +116,13 @@ export class PokemonController {
   }
 
   @patch('/pokemon/unfavorite/{id}')
-  @response(204, {
+  @response(200, {
     description: 'Pokemon PATCH success',
+    content: {
+      'application/json': {
+        result: "SUCCESS"
+      },
+    }
   })
   async unmarkAsFavorite(
     @param.path.string('id') id: string,

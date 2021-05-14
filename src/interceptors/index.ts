@@ -1,2 +1,2 @@
-export * from './find-by-id.interceptor';
-export * from './fields.interceptor';
+export * from './info.interceptor';
+export * from './types.interceptor';

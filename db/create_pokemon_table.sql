@@ -1,5 +1,3 @@
-create database Pokedex;
-
 CREATE TABLE IF NOT EXISTS pokemon (
    id text primary key,
    name text not null,
