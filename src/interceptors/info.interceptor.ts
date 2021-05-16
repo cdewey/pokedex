@@ -4,7 +4,7 @@ import {
   InvocationContext,
   InvocationResult,
   Provider,
-  ValueOrPromise
+  ValueOrPromise,
 } from '@loopback/core';
 
 /**
@@ -38,27 +38,13 @@ export class InfoInterceptor implements Provider<Interceptor> {
     invocationCtx: InvocationContext,
     next: () => ValueOrPromise<InvocationResult>,
   ) {
-    console.log(invocationCtx.args)
-    try {
-      // Add pre-invocation logic here
-      let result: any = await next();
-      // Add post-invocation logic here
-      //console.log(result);
-      let pokemon = []
-      if (Array.isArray(result)) {
-        for (let i = 0; i < result.length; i++) {
-          pokemon.push(result[i].info);
-        }
-        result = pokemon;
-      }
-      else {
-        result = result.info;
-      }
+    // Add pre-invocation logic here
+    let result: any = await next();
 
-      return result;
-    } catch (err) {
-      // Add error handling logic here
-      throw err;
-    }
+    result = {
+      message: 'Success',
+    };
+
+    return result;
   }
 }

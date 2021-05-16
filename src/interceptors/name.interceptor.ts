@@ -7,13 +7,15 @@ import {
   ValueOrPromise,
 } from '@loopback/core';
 
+const pattern = new RegExp('^[a-z]{1}');
+
 /**
  * This class will be bound to the application as an `Interceptor` during
  * `boot`
  */
-@injectable({tags: {key: TypesInterceptor.BINDING_KEY}})
-export class TypesInterceptor implements Provider<Interceptor> {
-  static readonly BINDING_KEY = `interceptors.${TypesInterceptor.name}`;
+@injectable({tags: {key: NameInterceptor.BINDING_KEY}})
+export class NameInterceptor implements Provider<Interceptor> {
+  static readonly BINDING_KEY = `interceptors.${NameInterceptor.name}`;
 
   /*
   constructor() {}
@@ -38,18 +40,24 @@ export class TypesInterceptor implements Provider<Interceptor> {
     invocationCtx: InvocationContext,
     next: () => ValueOrPromise<InvocationResult>,
   ) {
+    let name = invocationCtx.args[0];
+    console.log(name);
+    //capitalise the first letter for ease
+    name = this.convertFirstLettertoUpperCase(name);
+    console.log(name);
+    invocationCtx.args[0] = name;
     // Add pre-invocation logic here
-    let result = await next();
-    console.log(result);
-    let typesArray = [];
-    if (Array.isArray(result)) {
-      for (let i = 0; i < result.length; i++) {
-        if (result[i].type) {
-          typesArray.push(result[i].type);
-        }
-      }
-      result = {types: typesArray};
-    }
+    let result: any = await next();
+
     return result;
+  }
+
+  convertFirstLettertoUpperCase(name: string) {
+    if (pattern.test(name)) {
+      let firstLetter = name.charAt(0);
+      firstLetter = firstLetter.toUpperCase();
+      name = firstLetter + name.slice(1);
+    }
+    return name;
   }
 }

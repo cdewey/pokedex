@@ -1,5 +1,5 @@
+import {RestBindings} from '@loopback/rest';
 import {ApplicationConfig, PokedexApplication} from './application';
-import {InfoInterceptor, TypesInterceptor} from './interceptors';
 
 export * from './application';
 
@@ -7,8 +7,9 @@ export async function main(options: ApplicationConfig = {}) {
   const app = new PokedexApplication(options);
   await app.boot();
   await app.start();
-  app.bind('unwrap').toProvider(InfoInterceptor);
-  app.bind('types').toProvider(TypesInterceptor);
+  app
+    .bind(RestBindings.ERROR_WRITER_OPTIONS)
+    .to({safeFields: ['statusCode'], debug: false});
   const url = app.restServer.url;
   console.log(`Server is running at ${url}`);
   console.log(`Try ${url}/ping`);

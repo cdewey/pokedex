@@ -4,6 +4,10 @@ import {Model, model, property} from '@loopback/repository';
 export class SearchPokemon extends Model {
   @property({
     type: 'string',
+    jsonSchema: {
+      maxLength: 30,
+      minLength: 1,
+    },
   })
   nameFilter?: string;
 
@@ -14,19 +18,28 @@ export class SearchPokemon extends Model {
 
   @property({
     type: 'string',
+    jsonSchema: {
+      maxLength: 30,
+      minLength: 1,
+    },
   })
   typeFilter?: string;
 
   @property({
     type: 'number',
+    jsonSchema: {
+      minimum: 0,
+    },
   })
   limit?: number;
 
   @property({
     type: 'number',
+    jsonSchema: {
+      minimum: 0,
+    },
   })
   offset?: number;
-
 
   constructor(data?: Partial<SearchPokemon>) {
     super(data);

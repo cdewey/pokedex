@@ -1,27 +1,17 @@
 import {intercept} from '@loopback/context';
-import {
-
-  repository
-} from '@loopback/repository';
+import {repository} from '@loopback/repository';
 import {
   get,
-  getModelSchemaRef, param,
-
-
+  getModelSchemaRef,
+  param,
   patch,
-
-
-
   post,
-
-
-
   requestBody,
-
-
-
-  response
+  response,
 } from '@loopback/rest';
+import {InfoInterceptor} from '../interceptors';
+import {IdCheckInterceptor} from '../interceptors/id-check.interceptor';
+import {NameInterceptor} from '../interceptors/name.interceptor';
 import {Pokemon, SearchPokemon} from '../models';
 import {PokemonRepository} from '../repositories';
 
@@ -29,105 +19,117 @@ export class PokemonController {
   constructor(
     @repository(PokemonRepository)
     public pokemonRepository: PokemonRepository,
-  ) { }
+  ) {}
 
   @post('/pokemon')
   @response(200, {
-    description: 'Array of Pokemon model instances',
+    description: 'Pokemon Array',
     content: {
       'application/json': {
         schema: {
           type: 'array',
-          items: getModelSchemaRef(Pokemon, {includeRelations: true}),
+          items: getModelSchemaRef(Pokemon, {includeRelations: false}),
         },
       },
     },
   })
-  @intercept('unwrap')
-  async find(
-    @requestBody() input: SearchPokemon,
-  ): Promise<Pokemon[]> {
+  async find(@requestBody() input: SearchPokemon): Promise<Pokemon[]> {
     return this.pokemonRepository.findPokemon(input);
   }
 
-
   @get('/pokemon/id/{id}')
+  @intercept(IdCheckInterceptor.BINDING_KEY)
   @response(200, {
-    description: 'Pokemon model instance',
+    description: 'Pokemon',
     content: {
       'application/json': {
-        schema: getModelSchemaRef(Pokemon, {includeRelations: true}),
+        schema: getModelSchemaRef(Pokemon, {includeRelations: false}),
       },
     },
   })
-  @intercept('unwrap')
-  async findById(
-    @param.path.string('id') id: string,
-    //@param.filter(Pokemon, {exclude: ['where', 'fields']}) filter?: FilterExcludingWhere<Pokemon>
-  ): Promise<Pokemon> {
-    return this.pokemonRepository.findById(id);
+  async findById(@param.path.string('id') id: string): Promise<Pokemon> {
+    return this.pokemonRepository.findByPokemonId(id);
   }
 
   @get('/pokemon/name/{name}')
+  @intercept(NameInterceptor.BINDING_KEY)
   @response(200, {
-    description: 'Pokemon model instance',
+    description: 'Pokemon',
     content: {
       'application/json': {
-        schema: getModelSchemaRef(Pokemon, {includeRelations: true}),
+        schema: getModelSchemaRef(Pokemon, {includeRelations: false}),
       },
     },
   })
-  @intercept('unwrap')
   async findByName(
     @param.path.string('name') name: string,
   ): Promise<Pokemon | null> {
-    return this.pokemonRepository.findByName(name);
+    return this.pokemonRepository.findByPokemonName(name);
   }
 
   @get('/pokemon/types')
   @response(200, {
-    description: 'Array of Strings of Pokemon types',
+    description: 'String[] of Pokemon types',
     content: {
       'application/json': {
+        schema: {
+          type: 'object',
+          title: 'Pokemon Types Response',
+          properties: {
+            types: {
+              type: 'array',
+              items: {
+                type: 'string',
+              },
+            },
+          },
+        },
       },
     },
   })
-  @intercept('types')
-  async getTypes(
-  ): Promise<string[] | null> {
+  async getTypes(): Promise<string[] | null> {
     return this.pokemonRepository.getPokemonTypes();
   }
 
-
-
   @patch('/pokemon/favorite/{id}')
+  @intercept(IdCheckInterceptor.BINDING_KEY)
+  @intercept(InfoInterceptor.BINDING_KEY)
   @response(200, {
-    description: 'Pokemon PATCH success',
+    description: 'Result',
     content: {
       'application/json': {
-        result: "SUCCESS"
+        schema: {
+          type: 'object',
+          title: 'Mutate Favorite Response',
+          properties: {
+            message: {type: 'string'},
+          },
+        },
       },
-    }
+    },
   })
-  async markAsFavorite(
-    @param.path.string('id') id: string,
-  ): Promise<void> {
+  async markAsFavorite(@param.path.string('id') id: string): Promise<void> {
     await this.pokemonRepository.markAsFavorite(id);
   }
 
   @patch('/pokemon/unfavorite/{id}')
+  @intercept(IdCheckInterceptor.BINDING_KEY)
+  @intercept(InfoInterceptor.BINDING_KEY)
   @response(200, {
-    description: 'Pokemon PATCH success',
+    description: 'Result',
     content: {
       'application/json': {
-        result: "SUCCESS"
+        schema: {
+          type: 'object',
+          title: 'Mutate Favorite Response',
+          properties: {
+            message: {type: 'string'},
+          },
+        },
       },
-    }
+    },
   })
-  async unmarkAsFavorite(
-    @param.path.string('id') id: string,
-  ): Promise<void> {
+  async unmarkAsFavorite(@param.path.string('id') id: string): Promise<void> {
     await this.pokemonRepository.unmarkAsFavorite(id);
   }
-
 }

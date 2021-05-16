@@ -23,7 +23,6 @@
     "eslint:fix": "npm run eslint -- --fix",
     "pretest": "npm run rebuild",
     "test": "lb-mocha --allow-console-logs \"dist/__tests__\"",
-    "posttest": "npm run lint",
     "test:dev": "lb-mocha --allow-console-logs dist/__tests__/**/*.js && npm run posttest",
     "docker:build": "docker build -t pokedex .",
     "docker:run": "docker run -p 3000:3000 -d pokedex",
@@ -62,11 +61,12 @@
   },
   "devDependencies": {
     "@loopback/build": "^6.4.0",
-    "source-map-support": "^0.5.19",
+    "@loopback/eslint-config": "^10.2.0",
     "@loopback/testlab": "^3.4.0",
     "@types/node": "^10.17.59",
-    "@loopback/eslint-config": "^10.2.0",
     "eslint": "^7.25.0",
+    "mocha": "^8.4.0",
+    "source-map-support": "^0.5.19",
     "typescript": "~4.2.4"
   }
 }

@@ -1,9 +1,9 @@
-let pokemons = require('./pokemons.json')
+let pokemons = require('./pokemons.json');
 let format = require('pg-format');
 
 let pokemonInsertArray = createPokemonLists();
 
-const { Pool, Client } = require('pg')
+const {Pool, Client} = require('pg');
 
 const client = new Client({
   user: 'postgres',
@@ -11,26 +11,28 @@ const client = new Client({
   database: 'pokedex',
   password: 'password',
   port: 5432,
-})
+});
 client.connect((err, res) => {
   if (err == null) {
-    importPokemon()
+    importPokemon();
   }
-})
+});
 
 function importPokemon() {
-  let query = format('Insert into pokemon (id, name, type1, type2, favorite, info) values %L', pokemonInsertArray);
+  let query = format(
+    'Insert into pokemon (id, name, type1, type2, favorite, info) values %L',
+    pokemonInsertArray,
+  );
   client.query(query, (err, res) => {
     if (err) {
-      console.log("ERROR")
-      console.log(err)
-    }
-    else {
-      console.log("Success")
-      console.log(res)
+      console.log('ERROR');
+      console.log(err);
+    } else {
+      console.log('Success');
+      console.log(res);
     }
     client.end();
-  })
+  });
 }
 
 function createPokemonLists() {
@@ -42,8 +44,7 @@ function createPokemonLists() {
     singleEntry.push(pokemon.types[0]);
     if (pokemon.types[1]) {
       singleEntry.push(pokemon.types[1]);
-    }
-    else {
+    } else {
       singleEntry.push(null);
     }
     singleEntry.push(false); //for the favorite
@@ -52,5 +53,3 @@ function createPokemonLists() {
   }
   return insertArray;
 }
-
-

@@ -3,9 +3,10 @@
 # Setup
 
 ## Node
-This porject will require node 10 or higher. Node can be intsalled from https://nodejs.org/en/.
 
-To install nessisary dependencies run the following from the root of the project directory.
+This project will require node 10 or higher. Node can be installed from https://nodejs.org/en/.
+
+To install necessary dependencies run the following from the root of the project directory.
 
 ```
 npm install
@@ -15,11 +16,11 @@ npm install
 
 You can use any postgres instance this setup will show how to set up a local instance to serve as this pokedex's database. The provided scripts can be easily edited for remote instances.
 
-### Instal Postgres
+### Install Postgres
 
 Download and install postgres from their website. https://www.postgresql.org/download/
 
-This setup presumes the user has choosen the username "postgres" and password "password" during installation.
+This setup presumes the user has chosen the username "postgres" and password "password" during installation.
 
 ### Open Postgres Terminal
 
@@ -33,11 +34,9 @@ psql postgres
 
 Create the pokedex database
 
-
 ```sh
 CREATE DATABASE pokedex;
 ```
-
 
 Connect to your new database
 
@@ -45,14 +44,15 @@ Connect to your new database
 \c pokedex
 ```
 
-Create the pokemon table by running the create_pokemon_table.sql file in the /db directory. Note Windows users should use linux path syntax as windows style can cause a permission denied error.
+Create the pokemon table by running the create_pokemon_table.sql file in the /db directory. Note Windows users should use Linux path syntax as windows style can cause a permission denied error.
 
 ```sh
 \i absolute/path/to/pokedex/db/create_pokemon_table.sql
 ```
 
 ### Populate Database
-The pokemon data is provided in the /db/pokemons.json file. They can be e asily imported using the /db/import_pokemon.js script.
+
+The pokemon data is provided in the /db/pokemons.json file. They can be easily imported using the /db/import_pokemon.js script.
 
 Before running the script edit the connection details for your Postgres instance. If your are doing a default localhost instance you should only need to change your password.
 
@@ -65,11 +65,13 @@ Before running the script edit the connection details for your Postgres instance
 ```
 
 To run the script
+
 ```sh
 node /path/to/db/import_pokemon.js
 ```
 
 ## Loopback
+
 The last bit of setup requires configuring the loopback datasource to connect to your Postgres instance. Edit the file /src/datsources/pokemon.datasource.ts. If your are doing a default localhost instance you should only need to change your password.
 
 ```
@@ -82,6 +84,7 @@ The last bit of setup requires configuring the loopback datasource to connect to
 ```
 
 # Start the API
+
 Start your database if it is not running.
 
 Start the API
@@ -97,6 +100,7 @@ The API can be explored and tested using LoopBacks provided explore page http://
 Replace the IP address if needed for your instance.
 
 # Default Loop Back Advice
+
 ## Install dependencies
 
 By default, dependencies were installed when this application was generated.
